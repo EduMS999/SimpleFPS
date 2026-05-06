@@ -1,6 +1,6 @@
-using UnityEngine;
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 
 public class SpawnSystem : MonoBehaviour
 {
@@ -9,7 +9,8 @@ public class SpawnSystem : MonoBehaviour
     public int enemyCount;
     public float spawnRate;
     [SerializeField] private float timeBetweenWaves = 4f;
-    private int currentWaveIndex = 0;
+    //private int currentWaveIndex = 0;
+    private int currentWave = 0;
 
     [Header("Puntos de Spawn")]
     [SerializeField] private Transform[] spawnPoints;
@@ -20,6 +21,8 @@ public class SpawnSystem : MonoBehaviour
 
     private int enemiesAliveInWave;
     private bool isSpawningWave = false;
+
+    public static event Action<int> OnWaveChanged;
 
     private void Start()
     {
@@ -35,12 +38,14 @@ public class SpawnSystem : MonoBehaviour
     private IEnumerator StartNextWaveRoutine()
     {
         yield return new WaitForSeconds(timeBetweenWaves);
-   
-        Debug.Log($"[SpawnSystem] --- INICIANDO: Ronda {currentWaveIndex + 1} ---");
-        StartCoroutine(SpawnWave(currentWaveIndex));
+
+        ++currentWave;
+        Debug.Log($"[SpawnSystem] --- INICIANDO: Ronda {currentWave} ---");
+        OnWaveChanged?.Invoke(currentWave); // Se dispara el evento para comunicar al GameManager
+        StartCoroutine(SpawnWave());
     }
 
-    private IEnumerator SpawnWave(int currentWave)
+    private IEnumerator SpawnWave()
     {
         isSpawningWave = true;
         enemiesAliveInWave = enemyCount;
@@ -53,7 +58,7 @@ public class SpawnSystem : MonoBehaviour
         }
 
         isSpawningWave = false;
-        Debug.Log($"[SpawnSystem] Fin del spawn de la oleada {currentWaveIndex + 1}. Esperando a que mueran los enemigos.");
+        Debug.Log($"[SpawnSystem] Fin del spawn de la oleada {currentWave}. Esperando a que mueran los enemigos.");
     }
 
     private void SpawnEnemy(GameObject enemyPrefab)
@@ -72,7 +77,7 @@ public class SpawnSystem : MonoBehaviour
         }
 
         // 1. Evitamos repetir el mismo punto de spawn de forma segura
-        int randomIndex = Random.Range(0, spawnPoints.Length);
+        int randomIndex = UnityEngine.Random.Range(0, spawnPoints.Length);
 
         // Solo intentamos buscar otro punto si tenemos más de uno disponible
         if (spawnPoints.Length > 1)
@@ -80,7 +85,7 @@ public class SpawnSystem : MonoBehaviour
             int intentos = 0; // Seguridad extra para evitar bucles infinitos
             while (randomIndex == lastSpawnPointIndex && intentos < 10)
             {
-                randomIndex = Random.Range(0, spawnPoints.Length);
+                randomIndex = UnityEngine.Random.Range(0, spawnPoints.Length);
                 intentos++;
             }
         }
@@ -140,24 +145,23 @@ public class SpawnSystem : MonoBehaviour
         // Si la oleada terminó de spawnear y ya no quedan enemigos vivos
         if (enemiesAliveInWave <= 0 && !isSpawningWave)
         {
-            // ¿Era esta la última oleada?
-            /*if (currentWaveIndex + 1 >= waves.Length)
-            {
-                Debug.Log("[SpawnSystem] ¡Todas las oleadas completadas y todos los enemigos eliminados!");
+            //// ¿Era esta la última oleada?
+            //if (currentWaveIndex + 1 >= waves.Length)
+            //{
+            //    Debug.Log("[SpawnSystem] ¡Todas las oleadas completadas y todos los enemigos eliminados!");
 
-                // Avisamos al LevelManager de que el jugador ha ganado el nivel
-                if (LevelManager.Instance != null)
-                {
-                    LevelManager.Instance.WinLevel();
-                }
-            }
-            else
-            {
-                // Aún quedan más oleadas, avanzamos a la siguiente
-                Debug.Log($"[SpawnSystem] ¡Oleada completada! Avanzando a la siguiente.");
-                currentWaveIndex++;
-                StartCoroutine(StartNextWaveRoutine());
-            }*/
+            //    // Avisamos al LevelManager de que el jugador ha ganado el nivel
+            //    if (LevelManager.Instance != null)
+            //    {
+            //        LevelManager.Instance.WinLevel();
+            //    }
+            //}
+            
+            
+            // Aún quedan más oleadas, avanzamos a la siguiente
+            Debug.Log($"[SpawnSystem] ¡Oleada completada! Avanzando a la siguiente.");
+            StartCoroutine(StartNextWaveRoutine());
+           
         }
     }
 }
