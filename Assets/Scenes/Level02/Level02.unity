@@ -1153,6 +1153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PointsSystem
   pointsPerBullet: 10
   pointsPerDeath: 90
+  pointsText: {fileID: 2044973572}
 --- !u!1 &1440257317
 GameObject:
   m_ObjectHideFlags: 0
