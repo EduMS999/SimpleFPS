@@ -48,6 +48,8 @@ public class HealthSystem : MonoBehaviour
         // Efecto visual/sonoro inmediato
         PlayDamageSound();
 
+        PointsSystem.Instance.AddPointsPerBullet();
+
         // Verificamos si la vida llegó a cero para ejecutar la muerte.
         if (currentHealth <= 0)
         {
@@ -71,6 +73,8 @@ public class HealthSystem : MonoBehaviour
     {
         // Log para depuración en la consola de Unity.
         Debug.Log($"{gameObject.name} ha muerto.");
+
+        PointsSystem.Instance.AddPointsPerDeath();
 
         // Avisamos a todos los sistemas interesados (Cámara, UI, GameManager) que morimos.
         OnDeath?.Invoke();

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using TMPro;
+using Unity.VisualScripting;
 
 public class WeaponController : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class WeaponController : MonoBehaviour
 
     [Header("Referencias de UI")]
     [SerializeField] private HitmarkerUI hitmarkerUI;
+    [SerializeField] private TextMeshProUGUI reloadText;
 
     private int currentReserveAmmo; // Balas disponibles en la reserva actual
 
@@ -18,7 +21,7 @@ public class WeaponController : MonoBehaviour
     private int currentAmmo;
     private bool isReloading = false;
 
-    void Start()
+    void Awake()
     {
         currentAmmo = weaponData.maxAmmo;
         // Al empezar, le damos al jugador la reserva al máximo para este arma
@@ -62,21 +65,28 @@ public class WeaponController : MonoBehaviour
             Shoot();
             nextFireTime = Time.time + weaponData.fireRate;
         }
+
+        
     }
 
     private void Shoot()
     {
-        if (currentAmmo <= 0)
-        {
-            Debug.Log("¡Sin munición! Necesitas recargar.");
-            return;
-        }
-
         // Evitamos que el jugador dispare mientras está en la secuencia de recarga
         if (isReloading) return;
 
+        if (currentAmmo <= 0)
+        {
+            //Debug.Log("¡Sin munición! Necesitas recargar.");
+            return;
+        }
+
+        if (currentAmmo <= weaponData.maxAmmo / 3.5f)
+            ReloadText(true);
+
+        
+
         currentAmmo--; // Restamos una bala
-        Debug.Log($"Munición restante: {currentAmmo}/{weaponData.maxAmmo}");
+        //Debug.Log($"Munición restante: {currentAmmo}/{weaponData.maxAmmo}");
 
         // --- LÓGICA DE EFECTOS ---
 
@@ -169,7 +179,8 @@ public class WeaponController : MonoBehaviour
     private IEnumerator ReloadRoutine()
     {
         isReloading = true;
-        Debug.Log("Recargando...");
+        //Debug.Log("Recargando...");
+        ReloadText(false);
 
         yield return new WaitForSeconds(weaponData.reloadTime);
 
@@ -190,7 +201,7 @@ public class WeaponController : MonoBehaviour
         }
 
         isReloading = false;
-        Debug.Log($"¡Recarga completa! Cargador: {currentAmmo}/{weaponData.maxAmmo} | Reserva restante: {currentReserveAmmo}");
+        //Debug.Log($"¡Recarga completa! Cargador: {currentAmmo}/{weaponData.maxAmmo} | Reserva restante: {currentReserveAmmo}");
     }
 
     // --- MÉTODO: Usado por el AmmoPickup.cs ---
@@ -216,5 +227,31 @@ public class WeaponController : MonoBehaviour
     {
         // Si el objeto se desactiva (o morimos), forzamos el cese del disparo
         isAttacking = false;
+
+        // Se oculta el texto de recarga al desactivar el arma
+        if (reloadText != null)
+        {
+            ReloadText(false);
+        }
+    }
+
+    private void OnEnable()
+    {
+        // Al activar el objeto, verificamos si la munición es baja para mostrar el texto
+        // Usamos la misma lógica que en el método Shoot()
+        if (currentAmmo <= weaponData.maxAmmo / 3.5f && !isReloading)
+        {
+            ReloadText(true);
+        }
+    }
+
+    private void ReloadText(bool s)
+    {
+
+        if (!reloadText.IsActive() && s)
+            reloadText.gameObject.SetActive(true);
+        if(reloadText.IsActive() && !s)
+            reloadText.gameObject.SetActive(false);
+            
     }
 }
