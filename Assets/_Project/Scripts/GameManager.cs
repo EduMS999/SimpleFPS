@@ -8,8 +8,7 @@ public class GameManager : MonoBehaviour
     [Header("Referencias UI")]
     public TextMeshProUGUI waveNumberText;
 
-    [Header("Power Ups")]
-    public 
+    
 
     private void Awake()
     {
@@ -40,4 +39,6 @@ public class GameManager : MonoBehaviour
         if(waveNumberText != null)
             waveNumberText.text = waveNumber.ToString();
     }
+
+  
 }

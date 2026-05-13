@@ -17,7 +17,8 @@ public class HealthSystem : MonoBehaviour
     // OnDeath: Avisa a otros (como el Game Over) que el personaje murió.
     public event Action<float, float> OnHealthChanged; // Envía (vidaActual, vidaMáxima)
     public event Action OnDeath;
-
+    public event Action<Transform> OnPowerUp;
+        
     private void Awake()
     {
         // Al iniciar, nos aseguramos de que el personaje empiece con la vida llena.
@@ -78,6 +79,7 @@ public class HealthSystem : MonoBehaviour
 
         // Avisamos a todos los sistemas interesados (Cámara, UI, GameManager) que morimos.
         OnDeath?.Invoke();
+        OnPowerUp?.Invoke(gameObject.transform); // Evento necesario para dictaminar si el zombie suelta o no powerUp
     }
 
     private void PlayDamageSound()
