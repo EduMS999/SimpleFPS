@@ -168,7 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4809399063052904147}
-  - component: {fileID: 6821088433980957314}
+  - component: {fileID: 6019553275319481131}
   m_Layer: 0
   m_Name: BasicEnemy
   m_TagString: Untagged
@@ -193,7 +193,7 @@ Transform:
   - {fileID: 2250748059018932456}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6821088433980957314
+--- !u!114 &6019553275319481131
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,11 +206,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpDropper
   powerUps:
-  - {fileID: 2752266846942812301, guid: 5c7ec1ba48797e641979fcb9ce8f41d6, type: 3}
-  - {fileID: 919132149155446097, guid: f795c09c7fc88d84e9d9360f08c9c4a7, type: 3}
-  - {fileID: 919132149155446097, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
-  - {fileID: 4318606248750396421, guid: 113b7fce772f71a48a94d43089fea718, type: 3}
-  powerUpSpawnProbability: 10
+  - {fileID: 7713040245111731586, guid: 0b524625cb0102446970999bdb2c2c2b, type: 3}
+  powerUpSpawnProbability: 85
 --- !u!1 &5571818425824967716
 GameObject:
   m_ObjectHideFlags: 0

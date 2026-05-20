@@ -58,6 +58,11 @@ public class PointsSystem : MonoBehaviour
         points -= pointsToRemove;
         pointsText.text = points.ToString();
     }
+    public void AddPoints(int pointsToAdd)
+    {
+        points += pointsToAdd;
+        pointsText.text = points.ToString();
+    }
 
     // Método útil para que otros scripts lean el puntaje
     public int GetCurrentPoints() => points;

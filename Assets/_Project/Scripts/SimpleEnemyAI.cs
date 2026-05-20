@@ -194,7 +194,7 @@ public class SimpleEnemyAI : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 5f);
 
         // --- LÓGICA DE ATAQUE POR TIEMPO ---
-        Debug.Log("¡La IA te está atacando!");
+        //Debug.Log("¡La IA te está atacando!");
         if (Time.time >= nextAttackTime)
         {
             AttackPlayer();

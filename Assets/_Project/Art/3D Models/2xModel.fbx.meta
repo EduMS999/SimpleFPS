@@ -1,14 +1,9 @@
 fileFormatVersion: 2
-guid: 0edd08e09eac3d346ae36855b8b57106
+guid: df0af561db3e1964abca4170b6ac1e74
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: MyClouds
-    second: {fileID: 2100000, guid: 38a56622555aa4e4ab05891e34005fc4, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
