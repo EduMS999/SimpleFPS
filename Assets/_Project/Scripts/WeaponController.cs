@@ -138,11 +138,18 @@ public class WeaponController : MonoBehaviour
             // --- GESTIÓN DE DAÑO EN EL IMPACTO ---
             bool damageApplied = false;
 
+            // Calculamos el daño final. Si Instakill está activo, infligimos un daño masivo.
+            float finalDamage = weaponData.damage;
+            if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsInstakillActive)
+            {
+                finalDamage = 99999f; // O cualquier número absurdamente alto para garantizar la muerte
+            }
+
             // Opción 1: Verificamos si el objeto impactado tiene directamente el HealthSystem
             HealthSystem targetHealth = hit.collider.GetComponent<HealthSystem>();
             if (targetHealth != null)
             {
-                targetHealth.TakeDamage(weaponData.damage);
+                targetHealth.TakeDamage(finalDamage);
                 damageApplied = true;
             }
             else
@@ -151,7 +158,7 @@ public class WeaponController : MonoBehaviour
                 DamageProxy proxy = hit.collider.GetComponent<DamageProxy>();
                 if (proxy != null)
                 {
-                    proxy.TakeDamage(weaponData.damage);
+                    proxy.TakeDamage(finalDamage);
                     damageApplied = true;
                 }
             }

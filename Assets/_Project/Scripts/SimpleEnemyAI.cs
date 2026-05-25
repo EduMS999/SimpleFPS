@@ -253,10 +253,12 @@ public class SimpleEnemyAI : MonoBehaviour
     // ================= EFECTO DE MUERTE FÍSICA =================
     private void HandleDeath()
     {
-        Debug.Log("La IA ha muerto. Aplicando físicas de caída.");
+        //Debug.Log("La IA ha muerto. Aplicando físicas de caída.");
 
         // 1. Desactivamos este componente para que no siga evaluando el Update
         this.enabled = false;
+
+        CambiarLayerJerarquia(gameObject, LayerMask.NameToLayer("Ignore Raycast")) ; // Para no bloquear balas cuando esta muerto
 
         // 2. Apagamos por completo el NavMeshAgent para que no interfiera con el Rigidbody
         if (agent != null)
@@ -306,6 +308,16 @@ public class SimpleEnemyAI : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
+    // Función auxiliar para recorrer todos los hijos y ignorar los disparos una vez muerto
+    private void CambiarLayerJerarquia(GameObject objetoPadre, int nuevoLayer)
+    {
+        objetoPadre.layer = nuevoLayer;
+        foreach (Transform hijo in objetoPadre.transform)
+        {
+            CambiarLayerJerarquia(hijo.gameObject, nuevoLayer);
+        }
     }
 
 }
