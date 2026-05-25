@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class LevelManager : MonoBehaviour
     [Header("Referencias de UI")]
     [SerializeField] private GameObject victoryCanvas;
 
-    private List<HealthSystem> activeEnemies = new List<HealthSystem>();
+    [NonSerialized] public List<HealthSystem> activeEnemies = new List<HealthSystem>();
 
     private void Awake()
     {
@@ -85,4 +86,23 @@ public class LevelManager : MonoBehaviour
         yield return new WaitForSeconds(delayBeforeNextLevel);
         SceneManager.LoadScene(nextSceneName);
     }
+
+    /// <summary>
+    /// Detona la Nuke eliminando a todos los enemigos registrados actualmente.
+    /// </summary>
+    public void TriggerNukeDetonation()
+    {
+        Debug.Log($"[LevelManager] Detonando Nuke. Enemigos en rango: {activeEnemies.Count}");
+
+        // Recorremos la lista al revés para evitar que los índices se descoloquen.(desde el último índice hasta el 0).
+        for (int i = activeEnemies.Count - 1; i >= 0; i--)
+        {
+            if (activeEnemies[i] != null)
+            {
+                // Aplicamos un daño letal instantáneo
+                activeEnemies[i].TakeDamage(99999f);
+            }
+        }
+    }
+
 }

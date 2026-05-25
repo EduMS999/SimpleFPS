@@ -26,28 +26,22 @@ public class PointsSystem : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void AddPointsPerBullet()
     {
-        points += pointsPerBullet;
+        if (PowerUpManager.Instance.IsDoublePointsActive && PowerUpManager.Instance != null)
+            points += pointsPerBullet * 2;
+        else
+            points += pointsPerBullet;
         //Debug.Log($"Puntos actuales: {points}");
         pointsText.text = points.ToString();
     }
 
     public void AddPointsPerDeath()
     {
-        points += pointsPerDeath;
+        if (PowerUpManager.Instance.IsDoublePointsActive && PowerUpManager.Instance != null)
+            points += pointsPerDeath * 2;
+        else
+            points += pointsPerDeath;
         //Debug.Log($"Puntos actuales: {points}");
         pointsText.text = points.ToString();
     }
@@ -60,7 +54,10 @@ public class PointsSystem : MonoBehaviour
     }
     public void AddPoints(int pointsToAdd)
     {
-        points += pointsToAdd;
+        if(PowerUpManager.Instance.IsDoublePointsActive && PowerUpManager.Instance != null)
+            points += pointsToAdd * 2;
+        else
+            points += pointsToAdd;
         pointsText.text = points.ToString();
     }
 

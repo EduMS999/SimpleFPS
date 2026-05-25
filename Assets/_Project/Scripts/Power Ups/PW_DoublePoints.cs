@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PW_Instakill : MonoBehaviour
+public class PW_DoublePoints : MonoBehaviour
 {
     [SerializeField] private float duration = 30f; // Duración del efecto en segundos
     [SerializeField] private AudioClip pickupSound;
@@ -13,10 +13,10 @@ public class PW_Instakill : MonoBehaviour
             // Activamos el efecto a través del PowerUpManager global
             if (PowerUpManager.Instance != null)
             {
-                PowerUpManager.Instance.ActivateInstakill(duration);
+                PowerUpManager.Instance.ActivateDoublePoints(duration);
             }
 
-            // Efectos visuales/sonoros de recolección
+            // Efectos sonoros de recolección
             if (pickupSound != null)
             {
                 AudioSource.PlayClipAtPoint(pickupSound, transform.position);
@@ -26,6 +26,6 @@ public class PW_Instakill : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Lógica del power up en Shoot() de WeaponController.cs
+        // Lógica de los puntos dobles en la funciones de PointsSystem.cs
     }
 }

@@ -206,7 +206,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpDropper
   powerUps:
+  - {fileID: 8003466954774093899, guid: ab4382b1f3679b442aefa93c4e3ab834, type: 3}
+  - {fileID: 8448199869456856960, guid: 868768bb5cbe0dc4d9ca4160669102eb, type: 3}
   - {fileID: 2752266846942812301, guid: 5c7ec1ba48797e641979fcb9ce8f41d6, type: 3}
+  - {fileID: 7713040245111731586, guid: 0b524625cb0102446970999bdb2c2c2b, type: 3}
   powerUpSpawnProbability: 85
 --- !u!1 &5571818425824967716
 GameObject:

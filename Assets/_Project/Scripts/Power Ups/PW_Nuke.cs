@@ -1,9 +1,15 @@
 using UnityEngine;
 
-public class PW_Instakill : MonoBehaviour
+public class PW_Nuke : MonoBehaviour
 {
-    [SerializeField] private float duration = 30f; // Duración del efecto en segundos
+    [SerializeField] private GameObject mushroomCloud;
+    private Vector3 position;
     [SerializeField] private AudioClip pickupSound;
+
+    private void Start()
+    {
+        position = gameObject.transform.position;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -13,10 +19,10 @@ public class PW_Instakill : MonoBehaviour
             // Activamos el efecto a través del PowerUpManager global
             if (PowerUpManager.Instance != null)
             {
-                PowerUpManager.Instance.ActivateInstakill(duration);
+                PowerUpManager.Instance.ActivateNuke(position, mushroomCloud);
             }
 
-            // Efectos visuales/sonoros de recolección
+            // Efectos sonoros de recolección
             if (pickupSound != null)
             {
                 AudioSource.PlayClipAtPoint(pickupSound, transform.position);
@@ -26,6 +32,5 @@ public class PW_Instakill : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // Lógica del power up en Shoot() de WeaponController.cs
     }
 }

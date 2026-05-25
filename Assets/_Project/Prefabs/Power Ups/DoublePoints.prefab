@@ -82,6 +82,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5453645299801708529}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5987074876588585542}
   m_SourcePrefab: {fileID: 100100000, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
 --- !u!1 &8448199869456856960 stripped
 GameObject:
@@ -133,3 +136,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.1763122, y: 0.115217924, z: 0.028144507}
   m_Center: {x: -0.010356007, y: 0.05524185, z: 0.011152263}
+--- !u!114 &-5987074876588585542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8448199869456856960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dbb703991aad8a40ad2eb612ba4432a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PW_DoublePoints
+  duration: 30
+  pickupSound: {fileID: 0}
