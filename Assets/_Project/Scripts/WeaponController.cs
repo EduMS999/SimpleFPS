@@ -3,16 +3,22 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
+using System;
 
 public class WeaponController : MonoBehaviour
 {
     [Header("Configuración")]
     [SerializeField] private WeaponData weaponData;
     [SerializeField] private Transform firePoint;
+    [SerializeField] private GameObject bulletHoleDecalPrefab;
 
     [Header("Referencias de UI")]
     [SerializeField] private HitmarkerUI hitmarkerUI;
     [SerializeField] private TextMeshProUGUI reloadText;
+
+    // --- EVENTO PARA LA UI ---
+    // Este evento es el que busca AmmoDisplay.cs
+    public event Action OnAmmoChanged;
 
     private int currentReserveAmmo; // Balas disponibles en la reserva actual
 
@@ -21,11 +27,13 @@ public class WeaponController : MonoBehaviour
     private int currentAmmo;
     private bool isReloading = false;
 
-    void Awake()
+    void Start()
     {
         currentAmmo = weaponData.maxAmmo;
-        // Al empezar, le damos al jugador la reserva al máximo para este arma
         currentReserveAmmo = weaponData.maxReserveAmmo;
+
+        // Notificamos el estado inicial
+        OnAmmoChanged?.Invoke();
     }
 
 
@@ -88,6 +96,9 @@ public class WeaponController : MonoBehaviour
         currentAmmo--; // Restamos una bala
         //Debug.Log($"Munición restante: {currentAmmo}/{weaponData.maxAmmo}");
 
+        // --- ACTUALIZAR UI AL DISPARAR ---
+        OnAmmoChanged?.Invoke();
+
         // --- LÓGICA DE EFECTOS ---
 
         // 1. Aparecer el destello en la punta del cañón
@@ -112,62 +123,67 @@ public class WeaponController : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, weaponData.range))
         {
-            // Efecto de impacto en el lugar donde choca la bala
-            if (weaponData.hitEffectPrefab != null)
+            HandleHit(hit, ray);
+        }
+    }
+
+    private void HandleHit(RaycastHit hit, Ray ray)
+    {
+        // Impacto Visual
+        if (weaponData.hitEffectPrefab != null)
+        {
+            GameObject impactVFX = Instantiate(weaponData.hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+            Destroy(impactVFX, 2f);
+        }
+
+        // Decals
+        if (bulletHoleDecalPrefab != null)
+        {
+            Vector3 posicionConOffset = hit.point - (hit.normal * 0.01f);
+            GameObject decal = Instantiate(bulletHoleDecalPrefab, posicionConOffset, Quaternion.LookRotation(hit.normal));
+            decal.transform.SetParent(hit.transform);
+            decal.transform.localScale = Vector3.one;
+            Destroy(decal, 30f);
+        }
+
+        // Fuerza Física
+        Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddForceAtPosition(ray.direction * weaponData.impactForce, hit.point, ForceMode.Impulse);
+        }
+
+        // --- GESTIÓN DE DAÑO EN EL IMPACTO ---
+        bool damageApplied = false;
+
+        // Calculamos el daño final. Si Instakill está activo, infligimos un daño masivo.
+        float finalDamage = weaponData.damage;
+        if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsInstakillActive)
+        {
+            finalDamage = 99999f; // O cualquier número absurdamente alto para garantizar la muerte
+        }
+
+        // Opción 1: Verificamos si el objeto impactado tiene directamente el HealthSystem
+        HealthSystem targetHealth = hit.collider.GetComponent<HealthSystem>();
+        if (targetHealth != null)
+        {
+            targetHealth.TakeDamage(finalDamage);
+            damageApplied = true;
+        }
+        else
+        {
+            // Opción 2: Si no tiene HealthSystem directo, miramos si es un DamageProxy (ej. el TargetPoint o la cápsula visual)
+            DamageProxy proxy = hit.collider.GetComponent<DamageProxy>();
+            if (proxy != null)
             {
-                // 1. Guardamos el objeto instanciado en una variable
-                GameObject impactVFX = Instantiate(weaponData.hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-
-                // 2. Lo destruimos automáticamente tras 2 segundos
-                Destroy(impactVFX, 2f);
-            }
-
-            // --- LÓGICA DE FÍSICA (Impacto en Rigidbody) ---
-            // Intentamos obtener el Rigidbody del objeto que hemos golpeado
-            Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                // Calculamos la dirección del disparo (desde el origen del rayo hacia el punto de impacto)
-                Vector3 forceDirection = ray.direction;
-
-                // Aplicamos la fuerza en el punto exacto del impacto
-                rb.AddForceAtPosition(forceDirection * weaponData.impactForce, hit.point, ForceMode.Impulse);
-            }
-
-            // --- GESTIÓN DE DAÑO EN EL IMPACTO ---
-            bool damageApplied = false;
-
-            // Calculamos el daño final. Si Instakill está activo, infligimos un daño masivo.
-            float finalDamage = weaponData.damage;
-            if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsInstakillActive)
-            {
-                finalDamage = 99999f; // O cualquier número absurdamente alto para garantizar la muerte
-            }
-
-            // Opción 1: Verificamos si el objeto impactado tiene directamente el HealthSystem
-            HealthSystem targetHealth = hit.collider.GetComponent<HealthSystem>();
-            if (targetHealth != null)
-            {
-                targetHealth.TakeDamage(finalDamage);
+                proxy.TakeDamage(finalDamage);
                 damageApplied = true;
             }
-            else
-            {
-                // Opción 2: Si no tiene HealthSystem directo, miramos si es un DamageProxy (ej. el TargetPoint o la cápsula visual)
-                DamageProxy proxy = hit.collider.GetComponent<DamageProxy>();
-                if (proxy != null)
-                {
-                    proxy.TakeDamage(finalDamage);
-                    damageApplied = true;
-                }
-            }
+        }
 
-            // Si aplicamos daño (ya sea directo o por proxy), activamos el Hitmarker
-            if (damageApplied && hitmarkerUI != null)
-            {
-                hitmarkerUI.ShowHitmarker();
-            }
+        if (damageApplied && hitmarkerUI != null)
+        {
+            hitmarkerUI.ShowHitmarker();
         }
     }
 
@@ -186,7 +202,7 @@ public class WeaponController : MonoBehaviour
     private IEnumerator ReloadRoutine()
     {
         isReloading = true;
-        //Debug.Log("Recargando...");
+        OnAmmoChanged?.Invoke(); // Notificamos que ahora el estado es "RECARGANDO..."
         ReloadText(false);
 
         yield return new WaitForSeconds(weaponData.reloadTime);
@@ -208,7 +224,7 @@ public class WeaponController : MonoBehaviour
         }
 
         isReloading = false;
-        //Debug.Log($"¡Recarga completa! Cargador: {currentAmmo}/{weaponData.maxAmmo} | Reserva restante: {currentReserveAmmo}");
+        OnAmmoChanged?.Invoke(); // Notificamos que la recarga terminó
     }
 
     // --- MÉTODO: Usado por el AmmoPickup.cs ---
@@ -225,7 +241,22 @@ public class WeaponController : MonoBehaviour
 
         // Añadimos las balas limitando al máximo
         currentReserveAmmo = Mathf.Clamp(currentReserveAmmo + amount, 0, weaponData.maxReserveAmmo);
-        Debug.Log($"[{gameObject.name}] +{amount} balas de {typeOfAmmo}. Reserva actual: {currentReserveAmmo}/{weaponData.maxReserveAmmo}");
+        // --- ACTUALIZAR UI AL RECOGER BALAS ---
+        OnAmmoChanged?.Invoke();
+
+        return true; // Éxito: Munición aceptada
+    }
+    // --- MÉTODO: Usado por el PW_MaxAmmo.cs ---
+    /// <summary>
+    /// Intenta añadir munición a la reserva si el calibre coincide.
+    /// </summary>
+    public bool AddMaxAmmo()
+    {
+        int amount = weaponData.maxReserveAmmo;
+        // Añadimos las balas limitando al máximo
+        currentReserveAmmo = amount;
+        // --- ACTUALIZAR UI AL RECOGER BALAS ---
+        OnAmmoChanged?.Invoke();
 
         return true; // Éxito: Munición aceptada
     }
@@ -254,6 +285,7 @@ public class WeaponController : MonoBehaviour
 
     private void ReloadText(bool s)
     {
+        // Se encarga de desactivar o activar el texto de recargar en pantalla
 
         if (!reloadText.IsActive() && s)
             reloadText.gameObject.SetActive(true);

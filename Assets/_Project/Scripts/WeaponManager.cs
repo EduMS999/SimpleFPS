@@ -1,30 +1,41 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem; // Necesario para detectar las teclas con el nuevo sistema
 
 public class WeaponManager : MonoBehaviour
 {
-    [Header("Configuración de Armas")]
-    [Tooltip("Arrastra aquí los GameObjects de tus dos armas (hijos del jugador).")]
+    [Header("ConfiguraciÃ³n de Armas")]
+    [Tooltip("Arrastra aquÃ­ los GameObjects de tus dos armas (hijos del jugador).")]
     [SerializeField] private GameObject[] weapons;
+    [Header("Referencias de UI")]
+    [Tooltip("Arrastramos aquï¿½ el objeto que tiene el script AmmoDisplay")]
+    [SerializeField] private AmmoDisplay ammoDisplay;
 
     private int currentWeaponIndex = 0;
 
-    void Start()
+    void Awake()
     {
         InitializeWeapons();
+    }
+    private void Start()
+    {
+        // Al empezar, nos aseguramos de que la UI sepa quï¿½ arma tenemos
+        if (ammoDisplay != null)
+        {
+            ammoDisplay.UpdateSubscription();
+        }
     }
 
     void Update()
     {
-        // Verificamos que el teclado esté conectado
+        // Verificamos que el teclado estÃ© conectado
         if (Keyboard.current == null) return;
 
-        // Detectamos si se pulsó la tecla 1
+        // Detectamos si se pulsÃ³ la tecla 1
         if (Keyboard.current.digit1Key.wasPressedThisFrame)
         {
             SelectWeapon(0);
         }
-        // Detectamos si se pulsó la tecla 2
+        // Detectamos si se pulsÃ³ la tecla 2
         else if (Keyboard.current.digit2Key.wasPressedThisFrame)
         {
             SelectWeapon(1);
@@ -35,7 +46,7 @@ public class WeaponManager : MonoBehaviour
     {
         if (weapons == null || weapons.Length == 0) return;
 
-        // Al iniciar, activamos solo el arma por defecto y desactivamos las demás
+        // Al iniciar, activamos solo el arma por defecto y desactivamos las demÃ¡s
         for (int i = 0; i < weapons.Length; i++)
         {
             if (weapons[i] != null)
@@ -47,7 +58,7 @@ public class WeaponManager : MonoBehaviour
 
     public void SelectWeapon(int index)
     {
-        // Validaciones: que el índice sea correcto y no sea el arma que ya tenemos en la mano
+        // Validaciones: que el Ã­ndice sea correcto y no sea el arma que ya tenemos en la mano
         if (weapons == null || index < 0 || index >= weapons.Length || index == currentWeaponIndex) return;
         if (weapons[index] == null) return;
 
@@ -61,12 +72,20 @@ public class WeaponManager : MonoBehaviour
         currentWeaponIndex = index;
         weapons[currentWeaponIndex].SetActive(true);
 
+        // --- CAMBIO CLAVE ---
+        // Avisamos a la UI de que ahora tiene que escuchar a un arma diferente
+        if (ammoDisplay != null)
+        {
+            ammoDisplay.UpdateSubscription();
+        }
+        // -----------------------
+
         Debug.Log($"Arma cambiada a: {weapons[currentWeaponIndex].name}");
     }
 
     /// <summary>
     /// Devuelve el WeaponController del arma que el jugador tiene activa en este momento.
-    /// Esto nos servirá más adelante para los pickups de balas.
+    /// Esto nos servirÃ¡ mÃ¡s adelante para los pickups de balas.
     /// </summary>
     public WeaponController GetActiveWeapon()
     {
@@ -74,5 +93,19 @@ public class WeaponManager : MonoBehaviour
         if (weapons[currentWeaponIndex] == null) return null;
 
         return weapons[currentWeaponIndex].GetComponent<WeaponController>();
+    }
+
+    // --- METODO PARA ACCEDER A TODO EL ARSENAL ---
+    public WeaponController[] GetAllWeapons()
+    {
+        WeaponController[] controllers = new WeaponController[weapons.Length];
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            if (weapons[i] != null)
+            {
+                controllers[i] = weapons[i].GetComponent<WeaponController>();
+            }
+        }
+        return controllers;
     }
 }

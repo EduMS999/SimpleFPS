@@ -64,9 +64,21 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -8501284156531000229, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -5525380005753893801, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
       propertyPath: m_Name
       value: DoublePoints
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2046989685241962484, guid: df0af561db3e1964abca4170b6ac1e74, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

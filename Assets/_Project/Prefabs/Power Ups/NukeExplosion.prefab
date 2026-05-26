@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8700617353114198275, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.0003
@@ -64,9 +68,29 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -4876808054094043266, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -4408044377582423541, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3891412655136721881, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
       propertyPath: m_Name
       value: NukeExplosion
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7262961586491665068, guid: 9e88cc4cbb842b14d854c28686accea2, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

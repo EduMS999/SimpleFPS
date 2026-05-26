@@ -5,37 +5,60 @@ public class AmmoDisplay : MonoBehaviour
 {
     private TextMeshProUGUI textMesh;
     private WeaponManager weaponManager;
+    private WeaponController currentSubscribedWeapon;
 
-    void Start()
+    void Awake()
     {
         textMesh = GetComponent<TextMeshProUGUI>();
-
+        /*
         // En lugar de buscar un arma fija, buscamos el gestor de armas del jugador
         GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
             weaponManager = player.GetComponent<WeaponManager>();
         }
+        */
     }
 
-    void Update()
+    // El arma llama aqui a traves del evento
+    private void UpdateAmmoUI()
     {
-        if (weaponManager == null) return;
+        if (currentSubscribedWeapon == null) return;
 
-        // Le pedimos al WeaponManager el arma que el jugador tiene en la mano en este frame
-        WeaponController activeWeapon = weaponManager.GetActiveWeapon();
-
-        if (activeWeapon == null) return;
-
-        // Actualizamos el texto con los datos del arma activa
-        if (activeWeapon.GetIsReloading())
+        if (currentSubscribedWeapon.GetIsReloading())
         {
             textMesh.text = "RECARGANDO...";
         }
         else
         {
-            // Mostramos: Balas en cargador / Reserva de ese arma
-            textMesh.text = $"{activeWeapon.GetCurrentAmmo()} / {activeWeapon.GetCurrentReserveAmmo()}";
+            textMesh.text = $"{currentSubscribedWeapon.GetCurrentAmmo()} / {currentSubscribedWeapon.GetCurrentReserveAmmo()}";
         }
+    }
+
+    public void UpdateSubscription()
+    {
+        if (weaponManager == null)
+            weaponManager = GameObject.FindWithTag("Player")?.GetComponent<WeaponManager>();
+
+        if (weaponManager == null) return;
+
+        if (currentSubscribedWeapon != null)
+            currentSubscribedWeapon.OnAmmoChanged -= UpdateAmmoUI;
+
+        currentSubscribedWeapon = weaponManager.GetActiveWeapon();
+
+        if (currentSubscribedWeapon != null)
+        {
+            currentSubscribedWeapon.OnAmmoChanged += UpdateAmmoUI;
+            UpdateAmmoUI();
+        }
+    }
+
+
+    private void OnDestroy()
+    {
+        // Limpieza para evitar errores al cerrar el juego
+        if (currentSubscribedWeapon != null)
+            currentSubscribedWeapon.OnAmmoChanged -= UpdateAmmoUI;
     }
 }
