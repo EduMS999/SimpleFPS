@@ -32,6 +32,8 @@ public class WeaponController : MonoBehaviour
         currentAmmo = weaponData.maxAmmo;
         currentReserveAmmo = weaponData.maxReserveAmmo;
 
+        ReloadText(false);
+
         // Notificamos el estado inicial
         OnAmmoChanged?.Invoke();
     }
