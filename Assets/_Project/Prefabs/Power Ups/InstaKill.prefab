@@ -89,6 +89,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38b748d1e57621f469300f3e96dea280, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2276534614342125567}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 38b748d1e57621f469300f3e96dea280, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9054813710420542519}
   m_SourcePrefab: {fileID: 100100000, guid: 38b748d1e57621f469300f3e96dea280, type: 3}
 --- !u!1 &2752266846942812301 stripped
 GameObject:
@@ -154,3 +157,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PW_Instakill
   duration: 30
   pickupSound: {fileID: 0}
+--- !u!114 &9054813710420542519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2752266846942812301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20ea3c6c88f0a774aa673ecb715d23b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpLifetime
+  lifetime: 20
+  startBlinkingPercentage: 0.25
+  initialBlinkDelay: 0.4
+  minBlinkDelay: 0.05

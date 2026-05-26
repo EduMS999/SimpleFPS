@@ -89,6 +89,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c3c5129a24eb57a44ae9c0223102b1a6, type: 3}
       insertIndex: -1
       addedObject: {fileID: -274022708599365294}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c3c5129a24eb57a44ae9c0223102b1a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6994560738640486757}
   m_SourcePrefab: {fileID: 100100000, guid: c3c5129a24eb57a44ae9c0223102b1a6, type: 3}
 --- !u!1 &8003466954774093899 stripped
 GameObject:
@@ -156,3 +159,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PW_Nuke
   mushroomCloud: {fileID: 7169637148299921950, guid: e2c492181598e57498230b876b76cc86, type: 3}
   pickupSound: {fileID: 0}
+--- !u!114 &6994560738640486757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8003466954774093899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20ea3c6c88f0a774aa673ecb715d23b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerUpLifetime
+  lifetime: 20
+  startBlinkingPercentage: 0.25
+  initialBlinkDelay: 0.4
+  minBlinkDelay: 0.05
