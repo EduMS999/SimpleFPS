@@ -5,12 +5,12 @@ public class WeaponManager : MonoBehaviour
 {
     [Header("Configuración de Armas")]
     [Tooltip("Arrastra aquí los GameObjects de tus dos armas (hijos del jugador).")]
-    [SerializeField] private GameObject[] weapons;
+    [SerializeField] public GameObject[] weapons;
     [Header("Referencias de UI")]
     [Tooltip("Arrastramos aqu� el objeto que tiene el script AmmoDisplay")]
     [SerializeField] private AmmoDisplay ammoDisplay;
 
-    private int currentWeaponIndex = 0;
+    public int currentWeaponIndex = 0;
 
     void Awake()
     {
