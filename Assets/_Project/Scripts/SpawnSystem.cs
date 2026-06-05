@@ -12,6 +12,9 @@ public class SpawnSystem : MonoBehaviour
     //private int currentWaveIndex = 0;
     private int currentWave = 0;
 
+    [Header("Escalado de Dificultad")]
+    [SerializeField] private float healthMultiplierPerWave = 0.1f; // Incrementa un 10% la vida base por cada ronda pasada
+
     [Header("Puntos de Spawn")]
     [SerializeField] private Transform[] spawnPoints;
     private int lastSpawnPointIndex = -1; // Para evitar repetir el mismo punto
@@ -76,7 +79,7 @@ public class SpawnSystem : MonoBehaviour
             return;
         }
 
-        // 1. Evitamos repetir el mismo punto de spawn de forma segura
+        // Evitamos repetir el mismo punto de spawn de forma segura
         int randomIndex = UnityEngine.Random.Range(0, spawnPoints.Length);
 
         // Solo intentamos buscar otro punto si tenemos más de uno disponible
@@ -99,17 +102,25 @@ public class SpawnSystem : MonoBehaviour
             return;
         }
 
-        // 2. Instanciamos al enemigo
+        // Instanciamos al enemigo
         GameObject spawnedEnemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
 
-        // 3. Obtenemos los componentes ANTES de hacer nada más
+        // Obtenemos los componentes ANTES de hacer nada más
         // Cambiamos GetComponent por GetComponentInChildren para máxima seguridad
         SimpleEnemyAI enemyAI = spawnedEnemy.GetComponentInChildren<SimpleEnemyAI>();
         HealthSystem enemyHealth = spawnedEnemy.GetComponentInChildren<HealthSystem>();
 
-        // 4. Suscribimos el evento de muerte inmediatamente
+        // Suscribimos el evento de muerte inmediatamente
         if (enemyHealth != null)
         {
+            // --- ESCALADO DE VIDA ---
+            // Calculamos la nueva vida máxima: VidaBase + (VidaBase * Multiplicador * (Ronda - 1))
+            // En la Ronda 1: multiplicador es 0 (Mantiene vida base)
+            // En la Ronda 2: aumenta un 10%, en la Ronda 3 un 20%...
+            float extraHealthBonus = enemyHealth.maxHealth * healthMultiplierPerWave * (currentWave - 1);
+            enemyHealth.maxHealth += extraHealthBonus;
+            enemyHealth.currentHealth = enemyHealth.maxHealth; // Curamos al enemigo para que aparezca con la barra llena
+
             enemyHealth.OnDeath += OnEnemyDied;
 
             if (LevelManager.Instance != null)
