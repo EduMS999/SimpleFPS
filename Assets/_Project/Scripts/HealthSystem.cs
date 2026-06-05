@@ -1,11 +1,20 @@
 using UnityEngine;
-using System; // Necesario para usar 'Action', que son nuestros eventos
+using System;
+using System.Collections; // Necesario para usar 'Action', que son nuestros eventos
 
 public class HealthSystem : MonoBehaviour
 {
     [Header("Settings")]
     public float maxHealth = 100f; // La vida máxima que puede tener el personaje
     public float currentHealth;    // La vida que tiene en el momento exacto
+
+    [Header("Regeneración de Salud")]
+    [SerializeField] private bool canRegenerate = true;        // ¿Este personaje puede regenerar vida?
+    [SerializeField] private float healthPerSecond = 10f;      // Cuánta vida recupera por segundo
+    [SerializeField] private float delayBeforeRegen = 4f;      // Cuántos segundos espera tras recibir daño para empezar a curar
+    [SerializeField] private float regenTickRate = 0.2f;       // Cada cuánto tiempo (en segundos) aplica la curación (menor número = más fluido)
+
+    private Coroutine regenCoroutine; // Guarda la referencia de la corrutina activa
 
     [Header("Audio")]
     // Referencia al componente que reproduce sonido y la lista de clips disponibles
@@ -49,13 +58,52 @@ public class HealthSystem : MonoBehaviour
         // Efecto visual/sonoro inmediato
         PlayDamageSound();
 
-        PointsSystem.Instance.AddPointsPerBullet();
+        if(!canRegenerate)
+            PointsSystem.Instance.AddPointsPerBullet(); // Solo sumamos puntos por cada bala que impacta en el enemigo, evitando sumar si golpean al jugador
+
+        // --- LÓGICA DE REGENERACIÓN AL RECIBIR DAÑO ---
+        if (currentHealth > 0 && canRegenerate)
+        {
+            // Si ya se estaba regenerando o esperando para curarse, cancelamos esa cuenta atrás
+            if (regenCoroutine != null)
+            {
+                StopCoroutine(regenCoroutine);
+            }
+            // Iniciamos una nueva cuenta atrás de regeneración limpia
+            regenCoroutine = StartCoroutine(RegenerateHealthRoutine());
+        }
 
         // Verificamos si la vida llegó a cero para ejecutar la muerte.
         if (currentHealth <= 0)
         {
             Die();
         }
+    }
+
+    /// <summary>
+    /// Corrutina que gestiona la espera y la curación constante en el tiempo.
+    /// </summary>
+    private IEnumerator RegenerateHealthRoutine()
+    {
+        // Esperamos el tiempo de seguridad configurado tras recibir el último golpe
+        yield return new WaitForSeconds(delayBeforeRegen);
+
+        // Mientras la vida no esté al máximo, curamos poco a poco
+        while (currentHealth < maxHealth)
+        {
+            // Calculamos la curación proporcional al tick rate (ej: 10 de vida * 0.2 segundos = 2 de vida por tick)
+            currentHealth += healthPerSecond * regenTickRate;
+            currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+            // Avisamos a la interfaz (barra de vida) de que la salud está subiendo
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+            // Esperamos una fracción de segundo antes del siguiente incremento
+            yield return new WaitForSeconds(regenTickRate);
+        }
+
+        // Al terminar de curarse del todo, vaciamos la variable de control
+        regenCoroutine = null;
     }
 
     /// <summary>

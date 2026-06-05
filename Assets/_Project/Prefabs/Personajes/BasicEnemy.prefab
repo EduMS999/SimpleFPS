@@ -415,6 +415,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
   maxHealth: 100
   currentHealth: 40
+  canRegenerate: 0
+  healthPerSecond: 10
+  delayBeforeRegen: 4
+  regenTickRate: 0.2
   audioSource: {fileID: 7251963801214131159}
   damageSounds:
   - {fileID: 8300000, guid: fa75a390ac501684c86fc350b230138c, type: 3}

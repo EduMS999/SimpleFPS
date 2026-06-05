@@ -283,6 +283,11 @@ public class WeaponController : MonoBehaviour
         {
             ReloadText(true);
         }
+
+        if(isReloading)
+            StartCoroutine(ReloadRoutine()); // Si el arma se activa mientras está recargando, reanudamos la recarga
+
+        OnAmmoChanged?.Invoke(); // Notificamos a la UI que el arma ha sido activada para que actualice su estado
     }
 
     private void ReloadText(bool s)

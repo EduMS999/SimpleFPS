@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponName: Peacekeeper
   damage: 60
   range: 100
-  fireRate: 0.02
+  fireRate: 0.035
   isAutomatic: 1
   impactForce: 10
   maxAmmo: 35
