@@ -15,7 +15,7 @@ public class InteractableDoor : MonoBehaviour, IInteractable
     [Header("Prompts (Textos de Interfaz)")]
     [SerializeField] private string openPrompt = "Abrir Puerta";
     [SerializeField] private string closePrompt = "Cerrar Puerta";
-    [SerializeField] private string lockedPrompt = "Faltan llaves: ";
+    [SerializeField] private string lockedPrompt = "Necesitas llaves: ";
 
     [Header("Visual Feedback")]
     [SerializeField] private MeshRenderer statusLightRenderer; // Referencia a la luz/indicador de la puerta

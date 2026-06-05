@@ -136,6 +136,8 @@ public class InteractableGun : MonoBehaviour, IInteractable
         {
             // Si hay espacio libre (tiene solo 1 arma), se guarda en el slot vacío
             slotDestino = slotVacio;
+
+            weaponManager.weapons[0].SetActive(false); // Desactivamos el arma del slot 0 para que no se vea en la cámara
         }
         else
         {
@@ -150,6 +152,7 @@ public class InteractableGun : MonoBehaviour, IInteractable
 
         // Colocamos la nueva arma en el slot de armas utilizables del mánager
         weaponManager.weapons[slotDestino] = armaEnCamara;
+
 
         // La activamos físicamente para que el jugador la vea y la use
         armaEnCamara.SetActive(true);
